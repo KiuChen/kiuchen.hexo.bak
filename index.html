@@ -166,6 +166,260 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kiuchenya.ml/2021/09/08/%E7%AE%97%E6%B3%95%E7%AC%AC%E4%BA%94%E5%A4%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="KiuChen">
+      <meta itemprop="description" content="本网站旨在记录本人的部分学习笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KiuChenの小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/08/%E7%AE%97%E6%B3%95%E7%AC%AC%E4%BA%94%E5%A4%A9/" class="post-title-link" itemprop="url">算法第五天</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-08 20:49:05 / 修改时间：20:51:31" itemprop="dateCreated datePublished" datetime="2021-09-08T20:49:05+08:00">2021-09-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%90%88%E9%9B%86/" itemprop="url" rel="index"><span itemprop="name">算法合集</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>第五天：根据代码随想录，程序员carl的指南刷题</p>
+<ul>
+<li><p>数组：</p>
+<ul>
+<li><p>二分查找：力扣704  </p>
+<p>解题思路：正常二分法即可。注：left&lt;=right   , right = mid -1; left = mid+1;</p>
+</li>
+<li><p>移除元素：力扣27</p>
+<p>解题思路：设原数组长度L，遍历整个数组，遇到指定元素，不放回数组并且L–，最后返回L就是长度。</p>
+</li>
+<li><p>有序数组的平方：力扣977</p>
+<p>解题思路：0为分界，因为有序，所以只需要比较最左边和最右边的平方哪个大，然后将大的放在数组结尾就好了。需三个指针，一个指向开始，另一个指向结尾，还有一个从结尾到开始。</p>
+</li>
+<li><p>长度最小的子数组：力扣209</p>
+<p>解题思路：滑动窗口，末尾不越界时，进入第一个while，end指针向后移动，直到计算和满足target的值；当和不小于target时，开始第二个while，获取最小子数组的长度，继续计算和，start指针向后移动。</p>
+</li>
+<li><p>螺旋矩阵Ⅱ：力扣59</p>
+<p>解题思路：模拟从左到右，从上到下，从有到左，从下到上整个循环。先设置矩阵余量和矩阵四个角的大小。l =0,r=n-1,top=0,bot=n-1。当矩阵内还有数，while循环按顺序模拟四个操作上右下左top++,right–,bot–,left++，每次移动，矩阵内余量-1。</p>
+</li>
+</ul>
+</li>
+<li><p>链表</p>
+<ul>
+<li><p>移除链表元素：力扣203</p>
+<p>解题思路：设置虚拟头结点再进行删除操作，之后从虚拟头结点开始向后遍历，直到节点为空，如果中途遇到节点值为val，将其删除，否则，继续向后移动。</p>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kiuchenya.ml/2021/09/08/%E7%AE%97%E6%B3%95%E7%AC%AC%E5%9B%9B%E5%A4%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="KiuChen">
+      <meta itemprop="description" content="本网站旨在记录本人的部分学习笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KiuChenの小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/08/%E7%AE%97%E6%B3%95%E7%AC%AC%E5%9B%9B%E5%A4%A9/" class="post-title-link" itemprop="url">算法第四天</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-08 20:48:57 / 修改时间：20:51:04" itemprop="dateCreated datePublished" datetime="2021-09-08T20:48:57+08:00">2021-09-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%90%88%E9%9B%86/" itemprop="url" rel="index"><span itemprop="name">算法合集</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <ul>
+<li><p>第四天</p>
+<ul>
+<li><p>第一题：找链表的中间节点</p>
+<p>解题思路：快慢指针，快指针走2步，慢指针走一步，当快指针走到最后的时候，慢指针刚好走到中点。</p>
+</li>
+<li><p>第二题：删除链表的倒数第n个节点</p>
+<p>解题思路：快慢指针，快指针先走n步，然后和慢指针一起走，快指针走到终点的时候，慢指针刚好在倒数第n个节点</p>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kiuchenya.ml/2021/09/08/%E7%AE%97%E6%B3%95%E7%AC%AC%E4%B8%89%E5%A4%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="KiuChen">
+      <meta itemprop="description" content="本网站旨在记录本人的部分学习笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KiuChenの小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/08/%E7%AE%97%E6%B3%95%E7%AC%AC%E4%B8%89%E5%A4%A9/" class="post-title-link" itemprop="url">算法第三天</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-08 20:48:48 / 修改时间：20:50:46" itemprop="dateCreated datePublished" datetime="2021-09-08T20:48:48+08:00">2021-09-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%90%88%E9%9B%86/" itemprop="url" rel="index"><span itemprop="name">算法合集</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <ul>
+<li><p>第三天</p>
+<ul>
+<li><p>第一题：反转字符</p>
+<p>解题思路：左右对称的字符做交换即可。</p>
+</li>
+<li><p>第二题：反转字符串，要求字符串中每个单词内反转</p>
+<p>解题思路：以空格为分隔，找到一个单词，对单词进行反转，然后append到新的字符串中。注意遇到空格时，i++，为新字符串append一个空格。</p>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://kiuchenya.ml/2021/08/28/%E7%AE%97%E6%B3%95%E7%AC%AC%E4%BA%8C%E5%A4%A9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1039,7 +1293,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1052,7 +1306,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
