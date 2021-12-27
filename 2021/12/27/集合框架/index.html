@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kiuchenya.ml","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="集合！基本数据类型添加到集合中会先使用valueOf()封装为引用类型对象  数组：一旦创建数组的大小固定，无法往里边放东西；保存同一数据类型；增删比较麻烦 集合：动态保存任意多个对象；提供各种操作，如：add、remove、set、get等；使用api更轻松。   Collection介绍 集合类：  Collection  —&gt;它的父接口是Iterable List ArrayList">
+<meta property="og:type" content="article">
+<meta property="og:title" content="集合框架">
+<meta property="og:url" content="https://kiuchenya.ml/2021/12/27/%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="KiuChenの小屋">
+<meta property="og:description" content="集合！基本数据类型添加到集合中会先使用valueOf()封装为引用类型对象  数组：一旦创建数组的大小固定，无法往里边放东西；保存同一数据类型；增删比较麻烦 集合：动态保存任意多个对象；提供各种操作，如：add、remove、set、get等；使用api更轻松。   Collection介绍 集合类：  Collection  —&gt;它的父接口是Iterable List ArrayList">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-12-27T04:22:22.000Z">
+<meta property="article:modified_time" content="2021-12-27T11:29:33.848Z">
+<meta property="article:author" content="KiuChen">
+<meta property="article:tag" content="-java进阶 -集合">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kiuchenya.ml/2021/12/27/%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>集合框架 | KiuChenの小屋</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7df759bc23a5a116d94acb425dce599b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">KiuChenの小屋</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kiuchenya.ml/2021/12/27/%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="KiuChen">
+      <meta itemprop="description" content="本网站旨在记录本人的部分学习笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KiuChenの小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          集合框架
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-12-27 12:22:22 / 修改时间：19:29:33" itemprop="dateCreated datePublished" datetime="2021-12-27T12:22:22+08:00">2021-12-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="集合！"><a href="#集合！" class="headerlink" title="集合！"></a>集合！</h1><p>基本数据类型添加到集合中会先使用valueOf()封装为引用类型对象</p>
+<ol>
+<li>数组：一旦创建数组的大小固定，无法往里边放东西；保存同一数据类型；增删比较麻烦</li>
+<li>集合：动态保存任意多个对象；提供各种操作，如：add、remove、set、get等；使用api更轻松。 </li>
+</ol>
+<h2 id="Collection介绍"><a href="#Collection介绍" class="headerlink" title="Collection介绍"></a>Collection介绍</h2><ol>
+<li><p>集合类：</p>
+<ul>
+<li>Collection  —&gt;它的父接口是Iterable<ul>
+<li>List<ul>
+<li>ArrayList</li>
+<li>LinkedList</li>
+<li>Vector</li>
+</ul>
+</li>
+<li>Set<ul>
+<li>HashSet</li>
+<li>TreeSet</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Map<ul>
+<li>HashMap<ul>
+<li>LinkedHashMap</li>
+</ul>
+</li>
+<li>TreeMap</li>
+<li>HashTable<ul>
+<li>Properties</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Collections常用方法</p>
+<ul>
+<li>add：添加</li>
+<li>remove：删除指定下标/值(只删除第一个值为x)的元素</li>
+<li>contains：是否存在值为xx的元素</li>
+<li>size：获取元素个数</li>
+<li>isEmpty：判断是否为空</li>
+<li>clear：清空</li>
+<li>addAll：添加多个元素</li>
+<li>containsAll：查找多个元素是否存在</li>
+<li>removeAll：删除多个元素</li>
+</ul>
+</li>
+<li><p>Collection接口遍历方式一：Iterator</p>
+<ul>
+<li><p>hasNext()：判断是否下一个元素</p>
+</li>
+<li><p>next()：下移，将下移以后集合位置上的元素返回</p>
+<p>如果下一位为空，使用该方法会抛出NoSuchElementException</p>
+</li>
+<li><p>```java<br>Iterator it  = coll.iterator();<br>while(it.hasNext()){</p>
+<pre><code>Object obj = iterator.next();
+System.out.println(&quot;obj=&quot;+obj);
+</code></pre>
+<p>}</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 显示IDEA所以快捷键ITIT</span><br><span class="line"></span><br><span class="line">遍历方式二：增强For循环</span><br><span class="line"></span><br><span class="line">- ```java</span><br><span class="line">  for(Obj obj : col)&#123;</span><br><span class="line">  	System.out.println(&quot;obj=&quot;+obj);</span><br><span class="line">  &#125;</span><br><span class="line">  //for的底层仍然是迭代器</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<h2 id="List介绍"><a href="#List介绍" class="headerlink" title="List介绍"></a>List介绍</h2><ol>
+<li><p>List接口</p>
+<ul>
+<li><p>特性：</p>
+<ul>
+<li>元素有序：添加顺序和取出顺序一致，且可重复</li>
+<li>每个元素都有其对应的顺序索引(从0开始)</li>
+<li>实现类有ArrayLlist、LinkedList</li>
+</ul>
+</li>
+<li><p>常用方法</p>
+<ul>
+<li>add(int index, Object obj)：在指定位置添加元素</li>
+<li>addAll：在指定位置开始添加多个元素</li>
+<li>get：获取指定位置的元素</li>
+<li>indexOf：返回obj首次出现的位置</li>
+<li>lastIndexOf：返回obj在集合中最后出现的位置</li>
+<li>remove：删除指定下标/值(只删除第一个值为x)的元素，并返回</li>
+<li>set：设置指定位置的元素为ele，相当于替换</li>
+<li>subList(int fromIndex,int toIndex)：返回从from开始到to的元素，不含to位</li>
+</ul>
+</li>
+<li><p>遍历方式：迭代器，加强for循环，普通for循环配合get方法</p>
+</li>
+<li><p>ArrayList特性，可添加任何元素或null(可多个)，是数组实现的，不过线程不安全</p>
+<ul>
+<li><p>内部维护了一个Object类型的数组elementData</p>
+<p>transient Object[] elementData;</p>
+</li>
+<li><p>创建时使用无参构造器，默认大小0，加入元素变为10，之后以1.5倍扩容</p>
+</li>
+<li><p>创建时指定大小，则初始容量为该指定值，之后以1.5倍扩容</p>
+</li>
+</ul>
+</li>
+<li><p>ArrayList扩容流程</p>
+<ul>
+<li><p>创建elementData数组，空的或者指定值</p>
+</li>
+<li><p>执行add方法时，先确定是否要扩容</p>
+</li>
+<li><p>为了确定是否需要扩容，先确定minCapacity，第一次扩容为10  ||第一次确认</p>
+</li>
+<li><p>modCount++ 记录集合被修改的次数，避免多线程操作                ||第二次确认</p>
+<p>如果elementData大小真的不够，调用grow()去扩容</p>
+</li>
+<li><p>最后使用扩容机制，先初始化为10，之后按照1.5倍扩容</p>
+<p>扩容使用的方法时Arrays.copyOf(原数组，新大小)</p>
+</li>
+</ul>
+</li>
+<li><p>Vector特性</p>
+<ul>
+<li><p>底层维护elementData数组，</p>
+<p>protected Object[] elementData</p>
+</li>
+<li><p>get等操作方法用sinchronized修饰，保证线程安全</p>
+</li>
+</ul>
+</li>
+<li><p>Vector扩容</p>
+<ul>
+<li>无参构造，默认10，之后每次扩容为原来2倍</li>
+<li>有参构造，指定大小，每次扩容为原来2倍</li>
+</ul>
+</li>
+<li><p>LinkedList特点</p>
+<ul>
+<li>底层实现了双向链表和双端队列</li>
+<li>可以添加任意元素(元素可以重复)，包括null</li>
+<li>线程不安全，没有实现同步</li>
+</ul>
+</li>
+<li><p>LinkedList底层操作机制</p>
+<ul>
+<li>底层维护一个双向链表</li>
+<li>维护了first指向首节点，last指向尾节点</li>
+<li>每个节点又有prev、next、item三个属性，prev指向前一个，next指向后一个，实现了双向链表</li>
+<li>添加和删除效率较高</li>
+</ul>
+</li>
+<li><p>ArrayList和LinkedList比较</p>
+<ul>
+<li>A，可变数组，增删慢(因为数组扩容)，查效率较高</li>
+<li>L，双向链表，增删效率高(因为链表)，查效率低</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="Set介绍"><a href="#Set介绍" class="headerlink" title="Set介绍"></a>Set介绍</h2><ol>
+<li><p>Set接口</p>
+<ul>
+<li>特性：<ul>
+<li>无序(添加和取出顺序不一样，但是每次取出的顺序一样)，没有索引；</li>
+<li>不允许重复元素；</li>
+<li>实现类：HashSet、TreeSet</li>
+</ul>
+</li>
+<li>遍历：<ul>
+<li>迭代器</li>
+<li>增强for</li>
+<li>注意：Set不能使用普通for去遍历索引，因为它没有索引</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>HashSet</p>
+<ul>
+<li>实现了Set接口</li>
+<li>底层实际上是HashMap(查看无参构造方法可知)</li>
+<li>不含重复元素</li>
+</ul>
+</li>
+<li><p>HashSet扩容</p>
+<ul>
+<li>第一次添加时，table数组扩容到16，临界值是16*加载因子即16×0.75=12</li>
+<li>与临界值比较的是表中元素总数是数组以及链表和红黑树中的所有元素之和</li>
+<li>如果table使用超过了临界值12，就扩容到16×2=32，新的临界值就是32×0.75=24</li>
+<li>在Java8中当链表达到8(会立即进行树化判断)！！且table的长度大于等于64，就将链表转换为红黑树，否则仍然采用数组扩容机制</li>
+<li>可以采用for循环，将1-100添加到hashmap中来查看数组扩容</li>
+<li>可以采用重写hashcode设置为固定值，然后for循环添加对象来查看链表到红黑树的转化过程</li>
+</ul>
+</li>
+<li><p>HashSet添加元素时底层流程</p>
+<ul>
+<li><p>构造方法创建hashmap</p>
+</li>
+<li><p>执行add方法，内部使用put方法添加元素</p>
+</li>
+<li><p>put方法执行，先通过hash(key) 得到对应的hash值 </p>
+<p>算法为h = key.hashCode() ^ (h &gt;&gt;&gt; 16)</p>
+</li>
+<li><p>之后执行putVal方法</p>
+</li>
+<li><p>找到存储数据表table，看索引位置是否为空？</p>
+<ul>
+<li>空，直接加入</li>
+<li>非空，调用equals比较<ul>
+<li>相同，放弃添加</li>
+<li>不同，添加到链表末尾</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>在java8中，当链表长度、大于等于8，且哈希表长度大于等于64，链表转为红黑树</p>
+</li>
+</ul>
+</li>
+<li><p>LinkedHashSet：主要是双向链表使得能记录顺序</p>
+<ul>
+<li>是HashSet的子类</li>
+<li>底层是一个LinkedHashMap，底层维护了一个数组+双向链表</li>
+<li>LinkedHashSet根据元素的hashcode值决定元素的存储位置，同时使用链表维护元素的次序</li>
+<li>不允许添加重复元素</li>
+</ul>
+</li>
+</ol>
+<h2 id="Map介绍"><a href="#Map介绍" class="headerlink" title="Map介绍"></a>Map介绍</h2><ol>
+<li><p>Map接口特点</p>
+<ul>
+<li>保存Key-Value数据</li>
+<li>key和value可以是任何<strong>引用类型</strong>的数据，会封装到HashMap$Node对象中</li>
+<li>Map中的key不允许重复，且只有一个为null</li>
+<li>Map中的value允许重复，且可以多个为null</li>
+<li>常用String类作为Map的key</li>
+<li>key和value存在单向一对一关系，通过指定的key总能找到对应的value</li>
+<li>一对Key-Value是放在一个Node中的，因为Node中实现了Entry接口</li>
+</ul>
+</li>
+<li><p>Map中的K-V</p>
+<ul>
+<li><p>k-v最后是HashMap$Node node = newNode(hash,key,value,null)</p>
+</li>
+<li><p>k-v为了方便程序员遍历，还会创建EntrySet集合，该集合存放的元素的类型Entry，而一个Entry对象就有k,v</p>
+<p>EntrySet&lt;Entry&lt;k,v&gt;&gt; 即：transient Set&lt;Map.Entry&lt;k,v&gt;&gt; entrySet;</p>
+<p>EntrySet中，定义的类型是Map.Entry，实际存放HashMap$Node</p>
+<p>因为HashMap$Node实现了Map.entry</p>
+</li>
+</ul>
+</li>
+<li><p>Map接口常用方法</p>
+<ul>
+<li>put：添加</li>
+<li>remove：根据键删除映射关系</li>
+<li>get：根据键获取值</li>
+<li>size：获取元素个数</li>
+<li>isEmpty：判断个数是否为0</li>
+<li>clear：清除</li>
+<li>containsKey：查找键是否存在</li>
+</ul>
+</li>
+<li><p>Map的遍历方式，</p>
+<p>​    总结：获取keySet()，获取values()，获取entrySet()然后遍历</p>
+<ul>
+<li><p>遍历keySet</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Set keySet = map.keySet();</span><br><span class="line"><span class="keyword">for</span>(Object key:keySet)&#123;</span><br><span class="line">     System.out.println(key+<span class="string">&quot;-&quot;</span>+map.get(key));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>对keySet使用迭代器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Set keySet = map.keySet();</span><br><span class="line"></span><br><span class="line">Iterator iterator = keySet.iterator();</span><br><span class="line"><span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">    Object key = iterator.next();</span><br><span class="line">    System.out.println(key+<span class="string">&quot;-&quot;</span>+map.get(key));</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>使用values()方法获取所有值，然后增强for输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Collection values = map.values();</span><br><span class="line"><span class="keyword">for</span>(Object value:values)&#123;</span><br><span class="line">     System.out.println(value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>使用values方法获取所有值，然后迭代器输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Collection values = map.values();</span><br><span class="line"></span><br><span class="line">Iterator iterator = values.iterator();</span><br><span class="line"><span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">    Object value = iterator.next();</span><br><span class="line">    System.out.println(value);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>使用entrySet，然后增强for循环</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Set entrySet = map.entrySet();</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(Object entry: entrySet)&#123;</span><br><span class="line">	Map.Entry m = (Map.Entry) entry;</span><br><span class="line">    System.out.println(m.getKey()+<span class="string">&quot;- &quot;</span>+m.getValue());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>使用entrySet，然后迭代器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Set entrySet = map.entrySet();</span><br><span class="line"></span><br><span class="line">Iterator iterator = entrySet.iterator();</span><br><span class="line"><span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">    Map.Entry m = iterator.next;</span><br><span class="line">    System.out.println(m.getKey()+<span class="string">&quot;- &quot;</span>+m.getValue());</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>Map接口的常用实现类</p>
+<ul>
+<li><p>HashMap</p>
+</li>
+<li><p>HashTable</p>
+</li>
+<li><p>Properties</p>
+<p>如果添加相同的key，会覆盖原来对于的value值</p>
+<p>不保证映射的顺序</p>
+<p>没有实现同步，因此线程不安全</p>
+</li>
+</ul>
+</li>
+<li><p>HashMap底层机制</p>
+<ul>
+<li><p>特性：</p>
+<ul>
+<li>(k,v)是一个Node实现了Map.Entry&lt;K,V&gt;</li>
+<li>7：数组+链表；8：数组+链表+红黑树</li>
+</ul>
+</li>
+<li><p>底层：</p>
+<ul>
+<li>维护Node类型的数组table，默认为null</li>
+<li>创建对象时，默认加载因子初始化为0.75</li>
+<li>添加key-value时根据key的哈希值得到在table的索引，然后判断该索引处是否有元素，没有的话直接添加，有的话；判断当前key和该索引的key是否一样，如果一样，替换value值；不一样的话，判断当前时链表结构还是树结构，做出相应处理，如果添加时发现容量不够，会先扩容。</li>
+<li>第一次添加，table容量扩为16，临界值12</li>
+<li>以后每次扩容，容量为当前的2倍，临界值也为原来的二倍</li>
+<li>在java8，链表元素超过8，且table容量大于等于64，就会进行树化</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>HashMap的put</p>
+<ul>
+<li><p>put()方法，计算hash值，然后</p>
+</li>
+<li><p>进入putVal方法</p>
+<ul>
+<li><p>判断大小，不够扩容</p>
+</li>
+<li><p>判断索引下是否为空？是的话添加newNode</p>
+</li>
+<li><p>否则，该索引下不为空，判断要加入的键值对与存在的key的hash值一样或者他们equals为真，替换value值</p>
+</li>
+<li><p>判断如果当前的table中已存在的Node是红黑树，那么使用红黑树的方法去put</p>
+</li>
+<li><p>判断，如果当前找到的节点是链表，那么通过循环判断有没有和要插入的相同</p>
+<ul>
+<li><p>没有的话加入到链表末尾</p>
+<p>加入后，判断当前链表的个数是否达到8个，是的话就调用treeifyBin进行树化</p>
+</li>
+<li><p>有的话，不添加，而是替换value值</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="关于开发中集合类的选择？及对工具类的介绍"><a href="#关于开发中集合类的选择？及对工具类的介绍" class="headerlink" title="关于开发中集合类的选择？及对工具类的介绍"></a>关于开发中集合类的选择？及对工具类的介绍</h2><ol>
+<li><p>开发中如何选择集合实现类？</p>
+<p>(1). 判断存储类型是一组对象或者一组键值对</p>
+<p>(2). 是一组对象：</p>
+<ul>
+<li>Collection接口：<ul>
+<li>允许重复：List<ul>
+<li>增删多：LinkedList</li>
+<li>改查多：ArrayList</li>
+</ul>
+</li>
+<li>不允许重复：Set<ul>
+<li>无序：HashSet</li>
+<li>有序TreeSet</li>
+<li>插入和取出顺序一致：LinkedHashSet</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>(3). 是一组键值对</p>
+<ul>
+<li>键无序：HashMap</li>
+<li>键排序：TreeMap</li>
+<li>键插入和取出顺序一致：LinkedHashMap</li>
+<li>读取文件：Properties</li>
+</ul>
+</li>
+<li><p>HashTable简介：1.0版本出生 (比HashMap(1.2版本)早)</p>
+<ul>
+<li>存放的元素是键值对K-V</li>
+<li>键和值都不能为null，否则会抛出NullPointerException</li>
+<li>使用方法基本和HashMa一样</li>
+<li>是线程安全的</li>
+<li>底层：<ul>
+<li> 有数组Hashtable$Entry[]    初始化大小为11</li>
+<li>临界值 threshold= 11*0.75</li>
+<li>扩容：自带的扩容机制</li>
+<li>执行方法 addEntry(hash,key,value,index) 来添加</li>
+<li>当 if(count &gt;= threshold) 满足时扩容</li>
+<li>按照 int newCapacity = (oldCapacity &gt;&gt; 1) + 1;  来扩容</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Properties：也是Map接口实现类，继承自HashTable</p>
+<ul>
+<li>添加元素：put()方法</li>
+<li>删除元素：remove()方法</li>
+<li>修改元素：通过put()方法覆盖原来的value</li>
+<li>查找元素：get()方法和getPropety()方法</li>
+</ul>
+</li>
+<li><p>TreeSet: 底层是TreeMap</p>
+<p>(1)使用无参构造器创建时，仍然是无序的</p>
+<p>(2)使用TreeSet提供的一个构造器，可以传入比较器(匿名内部类)</p>
+<p>​    并在其中指定排序规则    </p>
+<ul>
+<li><p>构造器把传入的比较器对象，赋给了TreeSet底层中TreeMap的属性this.comparator。    </p>
+</li>
+<li><p>使用add()方法添加内容，在底层会执行到TreeMap中的put方法，此时我们可以发现里边有使用了comparator</p>
+<p>如果比较时发现重复key，选择不加入</p>
+<p>是否重复取决于比较器的设定！！！！</p>
+</li>
+</ul>
+</li>
+<li><p>TreeMap</p>
+<p>(1)put()方法执行逻辑</p>
+<ul>
+<li>第一次添加，先判断是否为空，是的话进行初始化，同时调用一次compare方法(避免null)，创建底层为Entry(而不是Node)，并交给root。</li>
+<li>如果不为空，使用比较器，动态绑定到我们的匿名内部类的compare，遍历所有的key，给当前key找到适当位置</li>
+<li>如果遍历过程中发现准备添加的key和当前存在的key相等，就不添加了。</li>
+</ul>
+</li>
+<li><p>Collections工具类：</p>
+<ul>
+<li>是一个操作List、Set、Map的工具类</li>
+<li>提供了一系列静态的方法对集合进行排序、查询和修改等操作</li>
+</ul>
+<p>(1)排序操作：(均为static)</p>
+<ul>
+<li>reverse(List)：反转List中元素的顺序</li>
+<li>shuffle(List)：对List集合元素进行随机排序(随机打乱顺序)</li>
+<li>sort(List)：根据元素的自然顺序对指定的List集合元素按升序排列</li>
+<li>sort(List，Comparator)：根据指定的Comparator对指定的List集合元素进行排序</li>
+<li>swap(List, int, int)：将指定list集合中的i处元素和j处元素进行交换</li>
+</ul>
+<p>(2)查找、替换：</p>
+<ul>
+<li>Object max(Collection)：根据元素的自然排序，返回给定集合中的最大元素</li>
+<li>Object max(Collection, Comparator)：根据指定的Comparator排序，返回给定集合中的最大元素</li>
+<li>Object min(Collection)</li>
+<li>Object min(Collection, Comparator) 找最小</li>
+<li>int frequency(Collection, Object)：返回指定集合中指定元素的出现次数</li>
+<li>void copy(List dest,List src)：将src中的内容复制到dest中</li>
+<li>boolean replaceAll(List list, Object oldVal, Object newVal)：使用新值替换List中所有旧值</li>
+</ul>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java%E8%BF%9B%E9%98%B6-%E9%9B%86%E5%90%88/" rel="tag"><i class="fa fa-tag"></i> -java进阶 -集合</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/25/%E8%A7%A3%E5%86%B3%E8%81%94%E6%83%B3%E6%8B%AF%E6%95%91%E8%80%85Y7000%E7%94%B5%E6%B1%A0%E4%B8%BA0%E7%9A%84%E9%97%AE%E9%A2%98/" rel="prev" title="解决联想拯救者Y7000电池为0的问题">
+      <i class="fa fa-chevron-left"></i> 解决联想拯救者Y7000电池为0的问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/12/27/%E5%8F%8D%E5%B0%84/" rel="next" title="反射">
+      反射 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9B%86%E5%90%88%EF%BC%81"><span class="nav-number">1.</span> <span class="nav-text">集合！</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Collection%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">Collection介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#List%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.2.</span> <span class="nav-text">List介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Set%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.3.</span> <span class="nav-text">Set介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Map%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.4.</span> <span class="nav-text">Map介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%BC%80%E5%8F%91%E4%B8%AD%E9%9B%86%E5%90%88%E7%B1%BB%E7%9A%84%E9%80%89%E6%8B%A9%EF%BC%9F%E5%8F%8A%E5%AF%B9%E5%B7%A5%E5%85%B7%E7%B1%BB%E7%9A%84%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.5.</span> <span class="nav-text">关于开发中集合类的选择？及对工具类的介绍</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="KiuChen"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">KiuChen</p>
+  <div class="site-description" itemprop="description">本网站旨在记录本人的部分学习笔记</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/KiuChen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;KiuChen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kiuchenggg@gmail.com" title="E-Mail → mailto:kiuchenggg@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/7521686077" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;7521686077" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KiuChen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

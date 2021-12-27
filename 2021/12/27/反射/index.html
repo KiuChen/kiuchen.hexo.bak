@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kiuchenya.ml","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="反射的用途：设计模式、框架底层 一、反射入门包含机制、作用、主要类及优点  Class类，是java内部存在的一个类，使用时需要捕获ClassNotFoundException 12345678910Class cls &#x3D; Class.forname(A类的名字);Object o  &#x3D; cls.newInstance();cls.getClass();Method m &#x3D; cls.getMeth">
+<meta property="og:type" content="article">
+<meta property="og:title" content="反射">
+<meta property="og:url" content="https://kiuchenya.ml/2021/12/27/%E5%8F%8D%E5%B0%84/index.html">
+<meta property="og:site_name" content="KiuChenの小屋">
+<meta property="og:description" content="反射的用途：设计模式、框架底层 一、反射入门包含机制、作用、主要类及优点  Class类，是java内部存在的一个类，使用时需要捕获ClassNotFoundException 12345678910Class cls &#x3D; Class.forname(A类的名字);Object o  &#x3D; cls.newInstance();cls.getClass();Method m &#x3D; cls.getMeth">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-12-27T04:22:22.000Z">
+<meta property="article:modified_time" content="2021-12-27T11:28:43.399Z">
+<meta property="article:author" content="KiuChen">
+<meta property="article:tag" content="-java进阶 -反射">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kiuchenya.ml/2021/12/27/%E5%8F%8D%E5%B0%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>反射 | KiuChenの小屋</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7df759bc23a5a116d94acb425dce599b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">KiuChenの小屋</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kiuchenya.ml/2021/12/27/%E5%8F%8D%E5%B0%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="KiuChen">
+      <meta itemprop="description" content="本网站旨在记录本人的部分学习笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KiuChenの小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          反射
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-12-27 12:22:22 / 修改时间：19:28:43" itemprop="dateCreated datePublished" datetime="2021-12-27T12:22:22+08:00">2021-12-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>反射的用途：设计模式、框架底层</p>
+<h2 id="一、反射入门"><a href="#一、反射入门" class="headerlink" title="一、反射入门"></a>一、反射入门</h2><p>包含机制、作用、主要类及优点</p>
+<ol>
+<li><p>Class类，是java内部存在的一个类，使用时需要捕获ClassNotFoundException</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Class cls = Class.forname(A类的名字);</span><br><span class="line">Object o  = cls.newInstance();</span><br><span class="line">cls.getClass();</span><br><span class="line">Method m = cls.getMethod(methodname_abc);</span><br><span class="line">m.invoke(o_对象);</span><br><span class="line"><span class="comment">//o即为A类 的实例化对象</span></span><br><span class="line"><span class="comment">//使用Class的getClass()方法可以查看某个对象所属的类</span></span><br><span class="line"><span class="comment">//使用Class的getMethod()方法可以得到某个对象所属的类中</span></span><br><span class="line"><span class="comment">//方法对象.invoke(o);</span></span><br><span class="line"><span class="comment">//方法名为abc的方法，即在反射中可以把方法视为对象</span></span><br></pre></td></tr></table></figure></li>
+<li><p>反射机制：允许程序在执行期借助Reflection API取得任何类的内部信息(如构造器、成员变量、成员方法)</p>
+<p>Java程序在计算机有三个阶段：</p>
+<p>代码阶段：.java和.class文件</p>
+<p>加载阶段：使用Class类来加载</p>
+<p>运行阶段：得到Class对象之后，创建对象，操作属性</p>
+</li>
+<li><p>反射机制的作用：</p>
+<p>运行时判断任意一个对象所属的类</p>
+<p>运行时构造任意一个类的对象</p>
+<p>运行时得到任意一个类所具有的成员变量和方法</p>
+<p>生成动态代理</p>
+</li>
+<li><p>反射中的主要类</p>
+<ul>
+<li><p>Class 代表一个类，Class对象表示某个加载后在堆中的对象</p>
+</li>
+<li><p>Method：代表类的方法</p>
+</li>
+<li><p>Field：代表类的成员变量</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Field nameField = cls.getField(<span class="string">&quot;age&quot;</span>);</span><br><span class="line"><span class="comment">//getField无法获取private变量</span></span><br><span class="line">System.out.println(nameField.get(o));</span><br></pre></td></tr></table></figure></li>
+<li><p>Constructor：代表类的构造方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Constructor constructor = cls.getConstructor();</span><br><span class="line"><span class="comment">//()中可以指定构造器参数，默认返回无参构造器</span></span><br></pre></td></tr></table></figure>
+
+<p>这些类在java.lang.reflection</p>
+</li>
+</ul>
+</li>
+<li><p>反射的优点：让我们动态创建和使用对象</p>
+<p>反射的缺点：反射的基本是解释执行，对速度有影响</p>
+<p>反射调用优化：关闭访问检查</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">方法对象.setAccessible(<span class="keyword">true</span>);</span><br><span class="line"><span class="comment">//取消访问检查来提高反射效率</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="对Class类的分析及方法实操"><a href="#对Class类的分析及方法实操" class="headerlink" title="对Class类的分析及方法实操"></a>对Class类的分析及方法实操</h2><ol>
+<li><p>Class类分析</p>
+<ul>
+<li>Class类也继承自Object类</li>
+<li>Class类对象不是new出来的，而是系统创建的</li>
+<li>对于某个类的Class类对象，在内存中只有一份，因为类只加载一次</li>
+<li>调用了ClassLoader类加载Class对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(<span class="string">&quot;com.cc.Cat&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>每个类的实例都会记得自己是由哪个class对象生成的</li>
+<li>通过class对象可以获得某个类的完整结构，通过一系列api来获得</li>
+<li>class对象存放在堆中</li>
+<li>类的字节码二进制数据，放在方法去区，也称为类的元数据（包括方法代码，变量名，方法名，访问权限）</li>
+</ul>
+</li>
+<li><p>Class类方法实操</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">String classAllPath = <span class="string">&quot;com.cc.clazz.Car&quot;</span>;</span><br><span class="line">        Class&lt;?&gt; cls = Class.forName(classAllPath);</span><br><span class="line">        System.out.println(cls);  			 	<span class="comment">//输出是哪个类的class对象  全类名 class com.cc.clazz.Car</span></span><br><span class="line">        System.out.println(cls.getClass());  	<span class="comment">//输出cls运行类型 class java.lang.Class</span></span><br><span class="line">        System.out.println(cls.getPackage());   <span class="comment">//输出cls的package对象 package com.cc.clazz</span></span><br><span class="line">        System.out.println(cls.getPackage().getName());<span class="comment">//输出包名   com.cc.clazz</span></span><br><span class="line">        System.out.println(cls.getName());		<span class="comment">//输出是哪个类(全类名)的class对象</span></span><br><span class="line">        <span class="comment">//通过cls，调用默认无参构造方法创建对象实例，如果没有会抛出异常InstantiationException和NoSuchMethodException</span></span><br><span class="line">        Car car =(Car)cls.newInstance();</span><br><span class="line">        System.out.println(car); <span class="comment">//输出默认调用toString()方法 Car&#123;prize=500000, name=&#x27;宝骏&#x27;, color=&#x27;蓝色&#x27;&#125;</span></span><br><span class="line">        <span class="comment">//通过反射获取成员变量,如果是private修饰的，会报异常NoSuchFieldException</span></span><br><span class="line">        Field name = cls.getField(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">		<span class="comment">//Field[] fileds = cls.getFields();  可以获取所有的public成员属性，忽略其他的，如果没有public的，就什么都不输出</span></span><br><span class="line">        System.out.println(name);<span class="comment">//输出 public java.lang.String com.cc.clazz.Car.name</span></span><br><span class="line">        <span class="comment">//通过反射给属性赋值</span></span><br><span class="line">        name.set(car,<span class="string">&quot;奔驰&quot;</span>);</span><br><span class="line">        System.out.println(name.get(car));</span><br></pre></td></tr></table></figure>
+
+<p>实操发现只有public类型的属性才能被获取</p>
+</li>
+</ol>
+<h2 id="获取类对象的六种方法及哪些类型有Class对象"><a href="#获取类对象的六种方法及哪些类型有Class对象" class="headerlink" title="获取类对象的六种方法及哪些类型有Class对象"></a>获取类对象的六种方法及哪些类型有Class对象</h2><ol>
+<li><p>获取类对象的六种方法</p>
+<ul>
+<li><p>已知全类名，用forName方法(静态方法)|编译阶段</p>
+<p>可能抛出ClassNotFoundException异常</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class cls = Class.forName(<span class="string">&quot;java.lang.Cat&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>应用场景：多用于配置文件，读取类全路径，加载类</p>
+</li>
+<li><p>前提：已知具体的类，通过类的class获取，安全可靠且性能好|加载阶段</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class cls = Cat.class</span><br></pre></td></tr></table></figure>
+
+<p>应用场景：参数传递，如反射得到对应构造器对象</p>
+</li>
+<li><p>前提：已知类实例，调用该实例的getClass()方法获取Class对象 |运行阶段</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Car car  = <span class="keyword">new</span> Car();</span><br><span class="line">Class cls3 = car.getClass();</span><br><span class="line">System.out.println(cls3);</span><br></pre></td></tr></table></figure>
+
+<p>应用场景：通过创建好的对象，获取Class对象</p>
+</li>
+<li><p>其他方式|类加载器方式获取</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ClassLoader classLoader = car.getClass().getClassLoader();</span><br><span class="line">Class cls4 = classLoader.loadClass(<span class="string">&quot;com.cc.clazz.Car&quot;</span>);</span><br><span class="line">System.out.println(cls4);</span><br></pre></td></tr></table></figure></li>
+<li><p>基本数据类型按如下方式得到Class类对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class cls = 基本数据类型.class</span><br></pre></td></tr></table></figure></li>
+<li><p>基本数据类型对应的包装类按如下方式得到Class类对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class cls = 包装类.TYPE</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>哪些类型有Class对象？</p>
+<ul>
+<li>外部类，成员内部类，静态内部类，局部内部类，匿名内部类</li>
+<li>interface：接口</li>
+<li>数组</li>
+<li>enum：枚举</li>
+<li>annotation：注解 Depracated.class</li>
+<li>基本数据类型 </li>
+<li>void</li>
+</ul>
+</li>
+</ol>
+<h2 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h2><ol>
+<li><p>基本说明：</p>
+<ul>
+<li><p>静态加载：编译时加载相关的类，如果没有则报错，依赖性强</p>
+<p>比如使用new关键字，在编译时会报错！</p>
+</li>
+<li><p>动态加载：运行时加载需要的类，如果运行时不用该类(即使这个类不存在)，也不会报错，能够很好的降低依赖性。比如使用Class类对象。在运行到该部分时才会报错！</p>
+</li>
+</ul>
+</li>
+<li><p>类加载时机：</p>
+<ul>
+<li>用new创建对象时    //静态加载</li>
+<li>子类被加载的时候，父类也加载   //静态加载</li>
+<li>调用类中的静态成员(static修饰)时</li>
+<li>通过反射  //动态加载</li>
+</ul>
+</li>
+<li><p>类加载过程</p>
+<p>(1)Java源码经过javac编译，生成字节码文件</p>
+<p>(2)字节码文件运行，进入类加载的三个阶段</p>
+<ul>
+<li><p>首先是Loading加载</p>
+<p>生成ClassLoader类加载器</p>
+<p>将类的class文件读入内存，并为之创建一个java.lang.Class对象，该过程由类加载器完成</p>
+<ul>
+<li>阶段目的：将字节码从不同的数据源(可能是class文件、jar包，甚至网络)转化为二进制字节流加载到内存中，并生成一个代表该类的java.lang.Class对象</li>
+</ul>
+</li>
+<li><p>然后是Linking连接，它又包含</p>
+<p>将类的二进制数据合并到JRE中</p>
+<ul>
+<li><p>验证    verification</p>
+<ul>
+<li><p>阶段目的：确保Class文件的字节流中包含的信息负荷当前虚拟机的要求，并且不会危害虚拟机的安全。</p>
+</li>
+<li><p>包括文件格式验证、元数据验证、字节码验证和符号引用验证</p>
+</li>
+<li><p>可以考虑使用</p>
+<p>-Xverify:none 参数来关闭大部分的类验证措施，缩短虚拟机类加载的时间</p>
+</li>
+</ul>
+</li>
+<li><p>准备    Preparation</p>
+<p>为静态变量分配内存，并进行默认的初始化，这些变量所使用的内存都在方法区中进行分配</p>
+</li>
+<li><p>解析    Resolution</p>
+<p>把常量池中符号引用替换为直接引用</p>
+</li>
+</ul>
+</li>
+<li><p>初始化 initialization</p>
+<p>静态代码块，静态变量的显式赋值</p>
+<p>JVM负责对类进行初始化，这里主要是指静态成员</p>
+<ul>
+<li><p>在初始化阶段，才真正开始执行类中定义的Java程序代码</p>
+</li>
+<li><p><clinit>()方法是由编译器按语句在源文件中出现的顺序，一次自动收集类中的所有静态变量的赋值动作和静态代码块中的语句，并进行合并。</p>
+</li>
+<li><p>虚拟机会保证一个类的<clinit>()方法线程安全，避免多个线程同时初始化一个类</p>
+<p>synchronized(getClassLoadingLock(name)){}</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>类加载后内存布局情况</p>
+<p>方法区：类的字节码文件的二进制数据</p>
+<p>堆区：类的Class对象</p>
+<h2 id="通过反射获取类的结构信息"><a href="#通过反射获取类的结构信息" class="headerlink" title="通过反射获取类的结构信息"></a>通过反射获取类的结构信息</h2><h3 id="第一组-java-lang-Class类"><a href="#第一组-java-lang-Class类" class="headerlink" title="第一组:java.lang.Class类"></a>第一组:java.lang.Class类</h3><ol>
+<li>getName：获取全类名</li>
+<li>getSimpleName：获取简单类名</li>
+<li>getFields：获取所有public修饰的属性，包含本类以及父类</li>
+<li>getDeclaredFields：获取本类中所有属性</li>
+<li>getMethods：获取所有public修饰的方法，包含本类以及父类</li>
+<li>getDeclaredMethods：获取本类中所有方法</li>
+<li>getConstructors：获取本类所有public修饰的构造器</li>
+<li>getDeclaredConstructors：获取本类中所有构造器</li>
+<li>getPackage：以Package形式返回包信息</li>
+<li>getSuperClass：以Class形式返回父类信息</li>
+<li>getInterfaces：以Class[]形式返回接口信息</li>
+<li>getAnnotations：以Annotation[]形式返回注解信息</li>
+</ol>
+<h3 id="第二组：java-lang-reflect-Field类"><a href="#第二组：java-lang-reflect-Field类" class="headerlink" title="第二组：java.lang.reflect.Field类"></a>第二组：java.lang.reflect.Field类</h3><ol>
+<li><p>getModifiers：以int形式返回修饰符</p>
+<p>[默认修饰符：0，public：1，private：2，protected：4，static：8，final：16]，如：public+static=9</p>
+</li>
+<li><p>getType：以Class形式返回类型</p>
+</li>
+<li><p>getName：返回属性名</p>
+</li>
+</ol>
+<h3 id="第三组：java-lang-reflect-Method类"><a href="#第三组：java-lang-reflect-Method类" class="headerlink" title="第三组：java.lang.reflect.Method类"></a>第三组：java.lang.reflect.Method类</h3><ol>
+<li><p>getModifiers：以int形式返回修饰符</p>
+<p>[默认修饰符：0，public：1，private：2，protected：4，static：8，final：16]，如：public+static=9</p>
+</li>
+<li><p>getReturnType：以Class形式获取 <strong>返回类型</strong></p>
+</li>
+<li><p>getName：返回<strong>方法名</strong></p>
+</li>
+<li><p>getParameterTypes：以Class[]返回参数类型数组</p>
+</li>
+</ol>
+<h3 id="第四组：java-lang-reflect-Constructor类"><a href="#第四组：java-lang-reflect-Constructor类" class="headerlink" title="第四组：java.lang.reflect.Constructor类"></a>第四组：java.lang.reflect.Constructor类</h3><ol>
+<li><p>getModifiers：以int形式返回修饰符</p>
+<p>[默认修饰符：0，public：1，private：2，protected：4，static：8，final：16]，如：public+static=9</p>
+</li>
+<li><p>getName：返回构造器名（全类名）</p>
+</li>
+<li><p>getParameterTypes：以Class[]返回参数类型数组</p>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="通过反射爆破创建对象"><a href="#通过反射爆破创建对象" class="headerlink" title="通过反射爆破创建对象"></a>通过反射爆破创建对象</h2><ol>
+<li><p>方式一：调用类中的publiciu修饰的无参构造器</p>
+</li>
+<li><p>方式二：调用类中的指定构造器</p>
+</li>
+<li><p>Class类相关方法：</p>
+<ul>
+<li><p>newInstance：调用类中的无参构造器，获取对应类的对象</p>
+</li>
+<li><p>getConstructor(Class…clazz)：根据参数列表，获取对应的public构造器对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Constructor&lt;?&gt; cons = xxClass.getConstructor(String.class);</span><br><span class="line"><span class="comment">//先得到对应构造器</span></span><br><span class="line">Object abc = cons.newInstance(<span class="string">&quot;ABC&quot;</span>);</span><br><span class="line"><span class="comment">//创建实例，同时传入实参</span></span><br></pre></td></tr></table></figure></li>
+<li><p>getDeclaredConstructor(Class…clazz)：根据参数列表，获取对应的所有构造器对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Constructor&lt;?&gt; cons = xxClass.getDeclaredConstructor(<span class="keyword">int</span>.class,String.class);</span><br><span class="line"><span class="comment">//先得到对应的私有构造器</span></span><br><span class="line">cons.setAccessible(<span class="keyword">true</span>);</span><br><span class="line"><span class="comment">//爆破，使得反射可以访问private构造器</span></span><br><span class="line">Object abc = cons.newInstance(<span class="string">&quot;ABC&quot;</span>);</span><br><span class="line"><span class="comment">//创建实例，同时传入实参</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>Constructor类相关方法</p>
+<ul>
+<li>setAccessible：爆破，破坏封装性</li>
+<li>newInstance(Object object)：调用构造器</li>
+</ul>
+</li>
+</ol>
+<h2 id="通过反射爆破访问类中的成员属性"><a href="#通过反射爆破访问类中的成员属性" class="headerlink" title="通过反射爆破访问类中的成员属性"></a>通过反射爆破访问类中的成员属性</h2><ul>
+<li><p>访问属性：ReflectAccessProperty.java</p>
+<ol>
+<li><p>根据属性名获取Field对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Field f = clazz对象.getDeclaredField(属性名);</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>暴破：f.setAccessible(true);//f是Field对象</p>
+</li>
+<li><p>访问</p>
+<ul>
+<li>f.set(o,值);//o表示对象</li>
+<li>syso(f.get(o));//输出对象</li>
+</ul>
+</li>
+<li><p>如果是静态对象，则set和get中的参数o，可以写成null</p>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="通过反射爆破访问类中的成员方法"><a href="#通过反射爆破访问类中的成员方法" class="headerlink" title="通过反射爆破访问类中的成员方法"></a>通过反射爆破访问类中的成员方法</h2><ul>
+<li><p>访问方法</p>
+<ol>
+<li><p>根据方法名和参数列表获取Method方法对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Method m = clazz.getDeclaredMethod(方法名,xx.class);</span><br><span class="line"><span class="comment">//得到本类的所有方法</span></span><br></pre></td></tr></table></figure></li>
+<li><p>获取对象：Object o  = clazz.newInstance();</p>
+</li>
+<li><p>暴破：m.setAccessible(true);</p>
+</li>
+<li><p>访问：Object returnValue = m.invoke(o,实参列表);</p>
+<p>在反射中，如果方法有返回值，统一返回Object，但是它的运行类型和方法定义的返回类型一致。</p>
+</li>
+<li><p>注意：如果是静态方法，则invoke的参数o，可以写成null；</p>
+</li>
+</ol>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java%E8%BF%9B%E9%98%B6-%E5%8F%8D%E5%B0%84/" rel="tag"><i class="fa fa-tag"></i> -java进阶 -反射</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/12/27/%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/" rel="prev" title="集合框架">
+      <i class="fa fa-chevron-left"></i> 集合框架
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/12/27/%E5%86%85%E9%83%A8%E7%B1%BB/" rel="next" title="四种内部类">
+      四种内部类 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%8F%8D%E5%B0%84%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">一、反射入门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9Class%E7%B1%BB%E7%9A%84%E5%88%86%E6%9E%90%E5%8F%8A%E6%96%B9%E6%B3%95%E5%AE%9E%E6%93%8D"><span class="nav-number">2.</span> <span class="nav-text">对Class类的分析及方法实操</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E7%B1%BB%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%85%AD%E7%A7%8D%E6%96%B9%E6%B3%95%E5%8F%8A%E5%93%AA%E4%BA%9B%E7%B1%BB%E5%9E%8B%E6%9C%89Class%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.</span> <span class="nav-text">获取类对象的六种方法及哪些类型有Class对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD"><span class="nav-number">4.</span> <span class="nav-text">类加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%8F%8D%E5%B0%84%E8%8E%B7%E5%8F%96%E7%B1%BB%E7%9A%84%E7%BB%93%E6%9E%84%E4%BF%A1%E6%81%AF"><span class="nav-number">5.</span> <span class="nav-text">通过反射获取类的结构信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%BB%84-java-lang-Class%E7%B1%BB"><span class="nav-number">5.1.</span> <span class="nav-text">第一组:java.lang.Class类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%BB%84%EF%BC%9Ajava-lang-reflect-Field%E7%B1%BB"><span class="nav-number">5.2.</span> <span class="nav-text">第二组：java.lang.reflect.Field类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%BB%84%EF%BC%9Ajava-lang-reflect-Method%E7%B1%BB"><span class="nav-number">5.3.</span> <span class="nav-text">第三组：java.lang.reflect.Method类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E7%BB%84%EF%BC%9Ajava-lang-reflect-Constructor%E7%B1%BB"><span class="nav-number">5.4.</span> <span class="nav-text">第四组：java.lang.reflect.Constructor类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%8F%8D%E5%B0%84%E7%88%86%E7%A0%B4%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1"><span class="nav-number">6.</span> <span class="nav-text">通过反射爆破创建对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%8F%8D%E5%B0%84%E7%88%86%E7%A0%B4%E8%AE%BF%E9%97%AE%E7%B1%BB%E4%B8%AD%E7%9A%84%E6%88%90%E5%91%98%E5%B1%9E%E6%80%A7"><span class="nav-number">7.</span> <span class="nav-text">通过反射爆破访问类中的成员属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%8F%8D%E5%B0%84%E7%88%86%E7%A0%B4%E8%AE%BF%E9%97%AE%E7%B1%BB%E4%B8%AD%E7%9A%84%E6%88%90%E5%91%98%E6%96%B9%E6%B3%95"><span class="nav-number">8.</span> <span class="nav-text">通过反射爆破访问类中的成员方法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="KiuChen"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">KiuChen</p>
+  <div class="site-description" itemprop="description">本网站旨在记录本人的部分学习笔记</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/KiuChen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;KiuChen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kiuchenggg@gmail.com" title="E-Mail → mailto:kiuchenggg@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/7521686077" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;7521686077" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KiuChen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
