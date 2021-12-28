@@ -189,10 +189,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-12-27 12:22:22 / 修改时间：19:29:05" itemprop="dateCreated datePublished" datetime="2021-12-27T12:22:22+08:00">2021-12-27</time>
+              <time title="创建时间：2021-12-27 12:22:22" itemprop="dateCreated datePublished" datetime="2021-12-27T12:22:22+08:00">2021-12-27</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-12-28 09:59:29" itemprop="dateModified" datetime="2021-12-28T09:59:29+08:00">2021-12-28</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -214,12 +220,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="关于static和final在类加载时初始化时机的分析"><a href="#关于static和final在类加载时初始化时机的分析" class="headerlink" title="关于static和final在类加载时初始化时机的分析"></a>关于static和final在类加载时初始化时机的分析</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Class A&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">int</span> n1 = <span class="number">10</span>;</span><br><span class="line">    <span class="comment">//1.n1是实例属性，不是静态变量，在准备阶段是不会分配内存的</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> n2 = <span class="number">20</span>;</span><br><span class="line">    <span class="comment">//2.n2是 静态变量，在准备阶段分配内存，且初始化为0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> n3 = <span class="number">30</span>;</span><br><span class="line">    <span class="comment">//3.n3 是static final 是常量，和静态变量不一样，在准备阶段直接赋值,因为一旦赋值就不变了 n3=30</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>对于他们的赋值，如果不在成员变量声明时进行赋值，该怎么做呢？</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Class A&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">int</span> n1 ;</span><br><span class="line">    <span class="comment">//1.n1是实例属性，不是静态变量，在准备阶段是不会分配内存的</span></span><br><span class="line">    <span class="comment">//n1可以通过构造器或者成员方法赋值</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> n2 ;</span><br><span class="line">    <span class="comment">//2.n2是 静态变量，在准备阶段分配内存，且初始化为0</span></span><br><span class="line">    <span class="comment">//n2可以通过static静态代码块来赋值</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> n3 ;</span><br><span class="line">    <span class="comment">//3.n3 是static final 是常量，和静态变量不一样，在准备阶段直接赋值,因为一旦赋值就不变了 </span></span><br><span class="line">    <span class="comment">//n3可以通过static静态代码块来赋值</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> n4;</span><br><span class="line">    <span class="comment">//n4可以在构造器或者</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//构造代码块中赋值</span></span><br><span class="line">        <span class="keyword">this</span>.n4 = n4l</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+          <h1 id="关于static和final在类加载时初始化时机的分析"><a href="#关于static和final在类加载时初始化时机的分析" class="headerlink" title="关于static和final在类加载时初始化时机的分析"></a>关于static和final在类加载时初始化时机的分析</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/27/%E5%85%B3%E4%BA%8Estatic%E5%92%8Cfinal%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%B6%E6%9C%BA%E7%9A%84%E5%88%86%E6%9E%90/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -261,10 +270,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-12-27 12:22:22 / 修改时间：19:30:20" itemprop="dateCreated datePublished" datetime="2021-12-27T12:22:22+08:00">2021-12-27</time>
+              <time title="创建时间：2021-12-27 12:22:22" itemprop="dateCreated datePublished" datetime="2021-12-27T12:22:22+08:00">2021-12-27</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-12-28 09:59:52" itemprop="dateModified" datetime="2021-12-28T09:59:52+08:00">2021-12-28</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -286,7 +301,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <ol>
+          <span id="more"></span>
+
+<ol>
 <li><p>定义：在一个类的内部又完整的嵌套了另一个类结构，被嵌套的叫内部类，嵌套其他类的叫外部类。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Outer</span></span>&#123;	<span class="comment">//外部类</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Inner</span></span>&#123;	<span class="comment">//内部类</span></span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Other</span></span>&#123; 	<span class="comment">//其他类</span></span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 <li><p>特点：可以直接访问所以属性(私有的也可以)，体现类之间的包含关系</p>
@@ -447,10 +464,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-12-27 12:22:22 / 修改时间：19:28:43" itemprop="dateCreated datePublished" datetime="2021-12-27T12:22:22+08:00">2021-12-27</time>
+              <time title="创建时间：2021-12-27 12:22:22" itemprop="dateCreated datePublished" datetime="2021-12-27T12:22:22+08:00">2021-12-27</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-12-28 09:59:16" itemprop="dateModified" datetime="2021-12-28T09:59:16+08:00">2021-12-28</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -473,276 +496,14 @@
 
       
           <p>反射的用途：设计模式、框架底层</p>
-<h2 id="一、反射入门"><a href="#一、反射入门" class="headerlink" title="一、反射入门"></a>一、反射入门</h2><p>包含机制、作用、主要类及优点</p>
-<ol>
-<li><p>Class类，是java内部存在的一个类，使用时需要捕获ClassNotFoundException</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Class cls = Class.forname(A类的名字);</span><br><span class="line">Object o  = cls.newInstance();</span><br><span class="line">cls.getClass();</span><br><span class="line">Method m = cls.getMethod(methodname_abc);</span><br><span class="line">m.invoke(o_对象);</span><br><span class="line"><span class="comment">//o即为A类 的实例化对象</span></span><br><span class="line"><span class="comment">//使用Class的getClass()方法可以查看某个对象所属的类</span></span><br><span class="line"><span class="comment">//使用Class的getMethod()方法可以得到某个对象所属的类中</span></span><br><span class="line"><span class="comment">//方法对象.invoke(o);</span></span><br><span class="line"><span class="comment">//方法名为abc的方法，即在反射中可以把方法视为对象</span></span><br></pre></td></tr></table></figure></li>
-<li><p>反射机制：允许程序在执行期借助Reflection API取得任何类的内部信息(如构造器、成员变量、成员方法)</p>
-<p>Java程序在计算机有三个阶段：</p>
-<p>代码阶段：.java和.class文件</p>
-<p>加载阶段：使用Class类来加载</p>
-<p>运行阶段：得到Class对象之后，创建对象，操作属性</p>
-</li>
-<li><p>反射机制的作用：</p>
-<p>运行时判断任意一个对象所属的类</p>
-<p>运行时构造任意一个类的对象</p>
-<p>运行时得到任意一个类所具有的成员变量和方法</p>
-<p>生成动态代理</p>
-</li>
-<li><p>反射中的主要类</p>
-<ul>
-<li><p>Class 代表一个类，Class对象表示某个加载后在堆中的对象</p>
-</li>
-<li><p>Method：代表类的方法</p>
-</li>
-<li><p>Field：代表类的成员变量</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Field nameField = cls.getField(<span class="string">&quot;age&quot;</span>);</span><br><span class="line"><span class="comment">//getField无法获取private变量</span></span><br><span class="line">System.out.println(nameField.get(o));</span><br></pre></td></tr></table></figure></li>
-<li><p>Constructor：代表类的构造方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Constructor constructor = cls.getConstructor();</span><br><span class="line"><span class="comment">//()中可以指定构造器参数，默认返回无参构造器</span></span><br></pre></td></tr></table></figure>
-
-<p>这些类在java.lang.reflection</p>
-</li>
-</ul>
-</li>
-<li><p>反射的优点：让我们动态创建和使用对象</p>
-<p>反射的缺点：反射的基本是解释执行，对速度有影响</p>
-<p>反射调用优化：关闭访问检查</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">方法对象.setAccessible(<span class="keyword">true</span>);</span><br><span class="line"><span class="comment">//取消访问检查来提高反射效率</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="对Class类的分析及方法实操"><a href="#对Class类的分析及方法实操" class="headerlink" title="对Class类的分析及方法实操"></a>对Class类的分析及方法实操</h2><ol>
-<li><p>Class类分析</p>
-<ul>
-<li>Class类也继承自Object类</li>
-<li>Class类对象不是new出来的，而是系统创建的</li>
-<li>对于某个类的Class类对象，在内存中只有一份，因为类只加载一次</li>
-<li>调用了ClassLoader类加载Class对象</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(<span class="string">&quot;com.cc.Cat&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>每个类的实例都会记得自己是由哪个class对象生成的</li>
-<li>通过class对象可以获得某个类的完整结构，通过一系列api来获得</li>
-<li>class对象存放在堆中</li>
-<li>类的字节码二进制数据，放在方法去区，也称为类的元数据（包括方法代码，变量名，方法名，访问权限）</li>
-</ul>
-</li>
-<li><p>Class类方法实操</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">String classAllPath = <span class="string">&quot;com.cc.clazz.Car&quot;</span>;</span><br><span class="line">        Class&lt;?&gt; cls = Class.forName(classAllPath);</span><br><span class="line">        System.out.println(cls);  			 	<span class="comment">//输出是哪个类的class对象  全类名 class com.cc.clazz.Car</span></span><br><span class="line">        System.out.println(cls.getClass());  	<span class="comment">//输出cls运行类型 class java.lang.Class</span></span><br><span class="line">        System.out.println(cls.getPackage());   <span class="comment">//输出cls的package对象 package com.cc.clazz</span></span><br><span class="line">        System.out.println(cls.getPackage().getName());<span class="comment">//输出包名   com.cc.clazz</span></span><br><span class="line">        System.out.println(cls.getName());		<span class="comment">//输出是哪个类(全类名)的class对象</span></span><br><span class="line">        <span class="comment">//通过cls，调用默认无参构造方法创建对象实例，如果没有会抛出异常InstantiationException和NoSuchMethodException</span></span><br><span class="line">        Car car =(Car)cls.newInstance();</span><br><span class="line">        System.out.println(car); <span class="comment">//输出默认调用toString()方法 Car&#123;prize=500000, name=&#x27;宝骏&#x27;, color=&#x27;蓝色&#x27;&#125;</span></span><br><span class="line">        <span class="comment">//通过反射获取成员变量,如果是private修饰的，会报异常NoSuchFieldException</span></span><br><span class="line">        Field name = cls.getField(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">		<span class="comment">//Field[] fileds = cls.getFields();  可以获取所有的public成员属性，忽略其他的，如果没有public的，就什么都不输出</span></span><br><span class="line">        System.out.println(name);<span class="comment">//输出 public java.lang.String com.cc.clazz.Car.name</span></span><br><span class="line">        <span class="comment">//通过反射给属性赋值</span></span><br><span class="line">        name.set(car,<span class="string">&quot;奔驰&quot;</span>);</span><br><span class="line">        System.out.println(name.get(car));</span><br></pre></td></tr></table></figure>
-
-<p>实操发现只有public类型的属性才能被获取</p>
-</li>
-</ol>
-<h2 id="获取类对象的六种方法及哪些类型有Class对象"><a href="#获取类对象的六种方法及哪些类型有Class对象" class="headerlink" title="获取类对象的六种方法及哪些类型有Class对象"></a>获取类对象的六种方法及哪些类型有Class对象</h2><ol>
-<li><p>获取类对象的六种方法</p>
-<ul>
-<li><p>已知全类名，用forName方法(静态方法)|编译阶段</p>
-<p>可能抛出ClassNotFoundException异常</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class cls = Class.forName(<span class="string">&quot;java.lang.Cat&quot;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>应用场景：多用于配置文件，读取类全路径，加载类</p>
-</li>
-<li><p>前提：已知具体的类，通过类的class获取，安全可靠且性能好|加载阶段</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class cls = Cat.class</span><br></pre></td></tr></table></figure>
-
-<p>应用场景：参数传递，如反射得到对应构造器对象</p>
-</li>
-<li><p>前提：已知类实例，调用该实例的getClass()方法获取Class对象 |运行阶段</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Car car  = <span class="keyword">new</span> Car();</span><br><span class="line">Class cls3 = car.getClass();</span><br><span class="line">System.out.println(cls3);</span><br></pre></td></tr></table></figure>
-
-<p>应用场景：通过创建好的对象，获取Class对象</p>
-</li>
-<li><p>其他方式|类加载器方式获取</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ClassLoader classLoader = car.getClass().getClassLoader();</span><br><span class="line">Class cls4 = classLoader.loadClass(<span class="string">&quot;com.cc.clazz.Car&quot;</span>);</span><br><span class="line">System.out.println(cls4);</span><br></pre></td></tr></table></figure></li>
-<li><p>基本数据类型按如下方式得到Class类对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class cls = 基本数据类型.class</span><br></pre></td></tr></table></figure></li>
-<li><p>基本数据类型对应的包装类按如下方式得到Class类对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class cls = 包装类.TYPE</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>哪些类型有Class对象？</p>
-<ul>
-<li>外部类，成员内部类，静态内部类，局部内部类，匿名内部类</li>
-<li>interface：接口</li>
-<li>数组</li>
-<li>enum：枚举</li>
-<li>annotation：注解 Depracated.class</li>
-<li>基本数据类型 </li>
-<li>void</li>
-</ul>
-</li>
-</ol>
-<h2 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h2><ol>
-<li><p>基本说明：</p>
-<ul>
-<li><p>静态加载：编译时加载相关的类，如果没有则报错，依赖性强</p>
-<p>比如使用new关键字，在编译时会报错！</p>
-</li>
-<li><p>动态加载：运行时加载需要的类，如果运行时不用该类(即使这个类不存在)，也不会报错，能够很好的降低依赖性。比如使用Class类对象。在运行到该部分时才会报错！</p>
-</li>
-</ul>
-</li>
-<li><p>类加载时机：</p>
-<ul>
-<li>用new创建对象时    //静态加载</li>
-<li>子类被加载的时候，父类也加载   //静态加载</li>
-<li>调用类中的静态成员(static修饰)时</li>
-<li>通过反射  //动态加载</li>
-</ul>
-</li>
-<li><p>类加载过程</p>
-<p>(1)Java源码经过javac编译，生成字节码文件</p>
-<p>(2)字节码文件运行，进入类加载的三个阶段</p>
-<ul>
-<li><p>首先是Loading加载</p>
-<p>生成ClassLoader类加载器</p>
-<p>将类的class文件读入内存，并为之创建一个java.lang.Class对象，该过程由类加载器完成</p>
-<ul>
-<li>阶段目的：将字节码从不同的数据源(可能是class文件、jar包，甚至网络)转化为二进制字节流加载到内存中，并生成一个代表该类的java.lang.Class对象</li>
-</ul>
-</li>
-<li><p>然后是Linking连接，它又包含</p>
-<p>将类的二进制数据合并到JRE中</p>
-<ul>
-<li><p>验证    verification</p>
-<ul>
-<li><p>阶段目的：确保Class文件的字节流中包含的信息负荷当前虚拟机的要求，并且不会危害虚拟机的安全。</p>
-</li>
-<li><p>包括文件格式验证、元数据验证、字节码验证和符号引用验证</p>
-</li>
-<li><p>可以考虑使用</p>
-<p>-Xverify:none 参数来关闭大部分的类验证措施，缩短虚拟机类加载的时间</p>
-</li>
-</ul>
-</li>
-<li><p>准备    Preparation</p>
-<p>为静态变量分配内存，并进行默认的初始化，这些变量所使用的内存都在方法区中进行分配</p>
-</li>
-<li><p>解析    Resolution</p>
-<p>把常量池中符号引用替换为直接引用</p>
-</li>
-</ul>
-</li>
-<li><p>初始化 initialization</p>
-<p>静态代码块，静态变量的显式赋值</p>
-<p>JVM负责对类进行初始化，这里主要是指静态成员</p>
-<ul>
-<li><p>在初始化阶段，才真正开始执行类中定义的Java程序代码</p>
-</li>
-<li><p><clinit>()方法是由编译器按语句在源文件中出现的顺序，一次自动收集类中的所有静态变量的赋值动作和静态代码块中的语句，并进行合并。</p>
-</li>
-<li><p>虚拟机会保证一个类的<clinit>()方法线程安全，避免多个线程同时初始化一个类</p>
-<p>synchronized(getClassLoadingLock(name)){}</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>类加载后内存布局情况</p>
-<p>方法区：类的字节码文件的二进制数据</p>
-<p>堆区：类的Class对象</p>
-<h2 id="通过反射获取类的结构信息"><a href="#通过反射获取类的结构信息" class="headerlink" title="通过反射获取类的结构信息"></a>通过反射获取类的结构信息</h2><h3 id="第一组-java-lang-Class类"><a href="#第一组-java-lang-Class类" class="headerlink" title="第一组:java.lang.Class类"></a>第一组:java.lang.Class类</h3><ol>
-<li>getName：获取全类名</li>
-<li>getSimpleName：获取简单类名</li>
-<li>getFields：获取所有public修饰的属性，包含本类以及父类</li>
-<li>getDeclaredFields：获取本类中所有属性</li>
-<li>getMethods：获取所有public修饰的方法，包含本类以及父类</li>
-<li>getDeclaredMethods：获取本类中所有方法</li>
-<li>getConstructors：获取本类所有public修饰的构造器</li>
-<li>getDeclaredConstructors：获取本类中所有构造器</li>
-<li>getPackage：以Package形式返回包信息</li>
-<li>getSuperClass：以Class形式返回父类信息</li>
-<li>getInterfaces：以Class[]形式返回接口信息</li>
-<li>getAnnotations：以Annotation[]形式返回注解信息</li>
-</ol>
-<h3 id="第二组：java-lang-reflect-Field类"><a href="#第二组：java-lang-reflect-Field类" class="headerlink" title="第二组：java.lang.reflect.Field类"></a>第二组：java.lang.reflect.Field类</h3><ol>
-<li><p>getModifiers：以int形式返回修饰符</p>
-<p>[默认修饰符：0，public：1，private：2，protected：4，static：8，final：16]，如：public+static=9</p>
-</li>
-<li><p>getType：以Class形式返回类型</p>
-</li>
-<li><p>getName：返回属性名</p>
-</li>
-</ol>
-<h3 id="第三组：java-lang-reflect-Method类"><a href="#第三组：java-lang-reflect-Method类" class="headerlink" title="第三组：java.lang.reflect.Method类"></a>第三组：java.lang.reflect.Method类</h3><ol>
-<li><p>getModifiers：以int形式返回修饰符</p>
-<p>[默认修饰符：0，public：1，private：2，protected：4，static：8，final：16]，如：public+static=9</p>
-</li>
-<li><p>getReturnType：以Class形式获取 <strong>返回类型</strong></p>
-</li>
-<li><p>getName：返回<strong>方法名</strong></p>
-</li>
-<li><p>getParameterTypes：以Class[]返回参数类型数组</p>
-</li>
-</ol>
-<h3 id="第四组：java-lang-reflect-Constructor类"><a href="#第四组：java-lang-reflect-Constructor类" class="headerlink" title="第四组：java.lang.reflect.Constructor类"></a>第四组：java.lang.reflect.Constructor类</h3><ol>
-<li><p>getModifiers：以int形式返回修饰符</p>
-<p>[默认修饰符：0，public：1，private：2，protected：4，static：8，final：16]，如：public+static=9</p>
-</li>
-<li><p>getName：返回构造器名（全类名）</p>
-</li>
-<li><p>getParameterTypes：以Class[]返回参数类型数组</p>
-</li>
-</ol>
-</li>
-</ol>
-<h2 id="通过反射爆破创建对象"><a href="#通过反射爆破创建对象" class="headerlink" title="通过反射爆破创建对象"></a>通过反射爆破创建对象</h2><ol>
-<li><p>方式一：调用类中的publiciu修饰的无参构造器</p>
-</li>
-<li><p>方式二：调用类中的指定构造器</p>
-</li>
-<li><p>Class类相关方法：</p>
-<ul>
-<li><p>newInstance：调用类中的无参构造器，获取对应类的对象</p>
-</li>
-<li><p>getConstructor(Class…clazz)：根据参数列表，获取对应的public构造器对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Constructor&lt;?&gt; cons = xxClass.getConstructor(String.class);</span><br><span class="line"><span class="comment">//先得到对应构造器</span></span><br><span class="line">Object abc = cons.newInstance(<span class="string">&quot;ABC&quot;</span>);</span><br><span class="line"><span class="comment">//创建实例，同时传入实参</span></span><br></pre></td></tr></table></figure></li>
-<li><p>getDeclaredConstructor(Class…clazz)：根据参数列表，获取对应的所有构造器对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Constructor&lt;?&gt; cons = xxClass.getDeclaredConstructor(<span class="keyword">int</span>.class,String.class);</span><br><span class="line"><span class="comment">//先得到对应的私有构造器</span></span><br><span class="line">cons.setAccessible(<span class="keyword">true</span>);</span><br><span class="line"><span class="comment">//爆破，使得反射可以访问private构造器</span></span><br><span class="line">Object abc = cons.newInstance(<span class="string">&quot;ABC&quot;</span>);</span><br><span class="line"><span class="comment">//创建实例，同时传入实参</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>Constructor类相关方法</p>
-<ul>
-<li>setAccessible：爆破，破坏封装性</li>
-<li>newInstance(Object object)：调用构造器</li>
-</ul>
-</li>
-</ol>
-<h2 id="通过反射爆破访问类中的成员属性"><a href="#通过反射爆破访问类中的成员属性" class="headerlink" title="通过反射爆破访问类中的成员属性"></a>通过反射爆破访问类中的成员属性</h2><ul>
-<li><p>访问属性：ReflectAccessProperty.java</p>
-<ol>
-<li><p>根据属性名获取Field对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Field f = clazz对象.getDeclaredField(属性名);</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-<li><p>暴破：f.setAccessible(true);//f是Field对象</p>
-</li>
-<li><p>访问</p>
-<ul>
-<li>f.set(o,值);//o表示对象</li>
-<li>syso(f.get(o));//输出对象</li>
-</ul>
-</li>
-<li><p>如果是静态对象，则set和get中的参数o，可以写成null</p>
-</li>
-</ol>
-</li>
-</ul>
-<h2 id="通过反射爆破访问类中的成员方法"><a href="#通过反射爆破访问类中的成员方法" class="headerlink" title="通过反射爆破访问类中的成员方法"></a>通过反射爆破访问类中的成员方法</h2><ul>
-<li><p>访问方法</p>
-<ol>
-<li><p>根据方法名和参数列表获取Method方法对象：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Method m = clazz.getDeclaredMethod(方法名,xx.class);</span><br><span class="line"><span class="comment">//得到本类的所有方法</span></span><br></pre></td></tr></table></figure></li>
-<li><p>获取对象：Object o  = clazz.newInstance();</p>
-</li>
-<li><p>暴破：m.setAccessible(true);</p>
-</li>
-<li><p>访问：Object returnValue = m.invoke(o,实参列表);</p>
-<p>在反射中，如果方法有返回值，统一返回Object，但是它的运行类型和方法定义的返回类型一致。</p>
-</li>
-<li><p>注意：如果是静态方法，则invoke的参数o，可以写成null；</p>
-</li>
-</ol>
-</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/27/%E5%8F%8D%E5%B0%84/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -784,10 +545,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-12-27 12:22:22 / 修改时间：19:29:33" itemprop="dateCreated datePublished" datetime="2021-12-27T12:22:22+08:00">2021-12-27</time>
+              <time title="创建时间：2021-12-27 12:22:22" itemprop="dateCreated datePublished" datetime="2021-12-27T12:22:22+08:00">2021-12-27</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-12-28 09:59:38" itemprop="dateModified" datetime="2021-12-28T09:59:38+08:00">2021-12-28</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -814,436 +581,14 @@
 <li>数组：一旦创建数组的大小固定，无法往里边放东西；保存同一数据类型；增删比较麻烦</li>
 <li>集合：动态保存任意多个对象；提供各种操作，如：add、remove、set、get等；使用api更轻松。 </li>
 </ol>
-<h2 id="Collection介绍"><a href="#Collection介绍" class="headerlink" title="Collection介绍"></a>Collection介绍</h2><ol>
-<li><p>集合类：</p>
-<ul>
-<li>Collection  —&gt;它的父接口是Iterable<ul>
-<li>List<ul>
-<li>ArrayList</li>
-<li>LinkedList</li>
-<li>Vector</li>
-</ul>
-</li>
-<li>Set<ul>
-<li>HashSet</li>
-<li>TreeSet</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Map<ul>
-<li>HashMap<ul>
-<li>LinkedHashMap</li>
-</ul>
-</li>
-<li>TreeMap</li>
-<li>HashTable<ul>
-<li>Properties</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Collections常用方法</p>
-<ul>
-<li>add：添加</li>
-<li>remove：删除指定下标/值(只删除第一个值为x)的元素</li>
-<li>contains：是否存在值为xx的元素</li>
-<li>size：获取元素个数</li>
-<li>isEmpty：判断是否为空</li>
-<li>clear：清空</li>
-<li>addAll：添加多个元素</li>
-<li>containsAll：查找多个元素是否存在</li>
-<li>removeAll：删除多个元素</li>
-</ul>
-</li>
-<li><p>Collection接口遍历方式一：Iterator</p>
-<ul>
-<li><p>hasNext()：判断是否下一个元素</p>
-</li>
-<li><p>next()：下移，将下移以后集合位置上的元素返回</p>
-<p>如果下一位为空，使用该方法会抛出NoSuchElementException</p>
-</li>
-<li><p>```java<br>Iterator it  = coll.iterator();<br>while(it.hasNext()){</p>
-<pre><code>Object obj = iterator.next();
-System.out.println(&quot;obj=&quot;+obj);
-</code></pre>
-<p>}</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 显示IDEA所以快捷键ITIT</span><br><span class="line"></span><br><span class="line">遍历方式二：增强For循环</span><br><span class="line"></span><br><span class="line">- ```java</span><br><span class="line">  for(Obj obj : col)&#123;</span><br><span class="line">  	System.out.println(&quot;obj=&quot;+obj);</span><br><span class="line">  &#125;</span><br><span class="line">  //for的底层仍然是迭代器</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ol>
-<h2 id="List介绍"><a href="#List介绍" class="headerlink" title="List介绍"></a>List介绍</h2><ol>
-<li><p>List接口</p>
-<ul>
-<li><p>特性：</p>
-<ul>
-<li>元素有序：添加顺序和取出顺序一致，且可重复</li>
-<li>每个元素都有其对应的顺序索引(从0开始)</li>
-<li>实现类有ArrayLlist、LinkedList</li>
-</ul>
-</li>
-<li><p>常用方法</p>
-<ul>
-<li>add(int index, Object obj)：在指定位置添加元素</li>
-<li>addAll：在指定位置开始添加多个元素</li>
-<li>get：获取指定位置的元素</li>
-<li>indexOf：返回obj首次出现的位置</li>
-<li>lastIndexOf：返回obj在集合中最后出现的位置</li>
-<li>remove：删除指定下标/值(只删除第一个值为x)的元素，并返回</li>
-<li>set：设置指定位置的元素为ele，相当于替换</li>
-<li>subList(int fromIndex,int toIndex)：返回从from开始到to的元素，不含to位</li>
-</ul>
-</li>
-<li><p>遍历方式：迭代器，加强for循环，普通for循环配合get方法</p>
-</li>
-<li><p>ArrayList特性，可添加任何元素或null(可多个)，是数组实现的，不过线程不安全</p>
-<ul>
-<li><p>内部维护了一个Object类型的数组elementData</p>
-<p>transient Object[] elementData;</p>
-</li>
-<li><p>创建时使用无参构造器，默认大小0，加入元素变为10，之后以1.5倍扩容</p>
-</li>
-<li><p>创建时指定大小，则初始容量为该指定值，之后以1.5倍扩容</p>
-</li>
-</ul>
-</li>
-<li><p>ArrayList扩容流程</p>
-<ul>
-<li><p>创建elementData数组，空的或者指定值</p>
-</li>
-<li><p>执行add方法时，先确定是否要扩容</p>
-</li>
-<li><p>为了确定是否需要扩容，先确定minCapacity，第一次扩容为10  ||第一次确认</p>
-</li>
-<li><p>modCount++ 记录集合被修改的次数，避免多线程操作                ||第二次确认</p>
-<p>如果elementData大小真的不够，调用grow()去扩容</p>
-</li>
-<li><p>最后使用扩容机制，先初始化为10，之后按照1.5倍扩容</p>
-<p>扩容使用的方法时Arrays.copyOf(原数组，新大小)</p>
-</li>
-</ul>
-</li>
-<li><p>Vector特性</p>
-<ul>
-<li><p>底层维护elementData数组，</p>
-<p>protected Object[] elementData</p>
-</li>
-<li><p>get等操作方法用sinchronized修饰，保证线程安全</p>
-</li>
-</ul>
-</li>
-<li><p>Vector扩容</p>
-<ul>
-<li>无参构造，默认10，之后每次扩容为原来2倍</li>
-<li>有参构造，指定大小，每次扩容为原来2倍</li>
-</ul>
-</li>
-<li><p>LinkedList特点</p>
-<ul>
-<li>底层实现了双向链表和双端队列</li>
-<li>可以添加任意元素(元素可以重复)，包括null</li>
-<li>线程不安全，没有实现同步</li>
-</ul>
-</li>
-<li><p>LinkedList底层操作机制</p>
-<ul>
-<li>底层维护一个双向链表</li>
-<li>维护了first指向首节点，last指向尾节点</li>
-<li>每个节点又有prev、next、item三个属性，prev指向前一个，next指向后一个，实现了双向链表</li>
-<li>添加和删除效率较高</li>
-</ul>
-</li>
-<li><p>ArrayList和LinkedList比较</p>
-<ul>
-<li>A，可变数组，增删慢(因为数组扩容)，查效率较高</li>
-<li>L，双向链表，增删效率高(因为链表)，查效率低</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<h2 id="Set介绍"><a href="#Set介绍" class="headerlink" title="Set介绍"></a>Set介绍</h2><ol>
-<li><p>Set接口</p>
-<ul>
-<li>特性：<ul>
-<li>无序(添加和取出顺序不一样，但是每次取出的顺序一样)，没有索引；</li>
-<li>不允许重复元素；</li>
-<li>实现类：HashSet、TreeSet</li>
-</ul>
-</li>
-<li>遍历：<ul>
-<li>迭代器</li>
-<li>增强for</li>
-<li>注意：Set不能使用普通for去遍历索引，因为它没有索引</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>HashSet</p>
-<ul>
-<li>实现了Set接口</li>
-<li>底层实际上是HashMap(查看无参构造方法可知)</li>
-<li>不含重复元素</li>
-</ul>
-</li>
-<li><p>HashSet扩容</p>
-<ul>
-<li>第一次添加时，table数组扩容到16，临界值是16*加载因子即16×0.75=12</li>
-<li>与临界值比较的是表中元素总数是数组以及链表和红黑树中的所有元素之和</li>
-<li>如果table使用超过了临界值12，就扩容到16×2=32，新的临界值就是32×0.75=24</li>
-<li>在Java8中当链表达到8(会立即进行树化判断)！！且table的长度大于等于64，就将链表转换为红黑树，否则仍然采用数组扩容机制</li>
-<li>可以采用for循环，将1-100添加到hashmap中来查看数组扩容</li>
-<li>可以采用重写hashcode设置为固定值，然后for循环添加对象来查看链表到红黑树的转化过程</li>
-</ul>
-</li>
-<li><p>HashSet添加元素时底层流程</p>
-<ul>
-<li><p>构造方法创建hashmap</p>
-</li>
-<li><p>执行add方法，内部使用put方法添加元素</p>
-</li>
-<li><p>put方法执行，先通过hash(key) 得到对应的hash值 </p>
-<p>算法为h = key.hashCode() ^ (h &gt;&gt;&gt; 16)</p>
-</li>
-<li><p>之后执行putVal方法</p>
-</li>
-<li><p>找到存储数据表table，看索引位置是否为空？</p>
-<ul>
-<li>空，直接加入</li>
-<li>非空，调用equals比较<ul>
-<li>相同，放弃添加</li>
-<li>不同，添加到链表末尾</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>在java8中，当链表长度、大于等于8，且哈希表长度大于等于64，链表转为红黑树</p>
-</li>
-</ul>
-</li>
-<li><p>LinkedHashSet：主要是双向链表使得能记录顺序</p>
-<ul>
-<li>是HashSet的子类</li>
-<li>底层是一个LinkedHashMap，底层维护了一个数组+双向链表</li>
-<li>LinkedHashSet根据元素的hashcode值决定元素的存储位置，同时使用链表维护元素的次序</li>
-<li>不允许添加重复元素</li>
-</ul>
-</li>
-</ol>
-<h2 id="Map介绍"><a href="#Map介绍" class="headerlink" title="Map介绍"></a>Map介绍</h2><ol>
-<li><p>Map接口特点</p>
-<ul>
-<li>保存Key-Value数据</li>
-<li>key和value可以是任何<strong>引用类型</strong>的数据，会封装到HashMap$Node对象中</li>
-<li>Map中的key不允许重复，且只有一个为null</li>
-<li>Map中的value允许重复，且可以多个为null</li>
-<li>常用String类作为Map的key</li>
-<li>key和value存在单向一对一关系，通过指定的key总能找到对应的value</li>
-<li>一对Key-Value是放在一个Node中的，因为Node中实现了Entry接口</li>
-</ul>
-</li>
-<li><p>Map中的K-V</p>
-<ul>
-<li><p>k-v最后是HashMap$Node node = newNode(hash,key,value,null)</p>
-</li>
-<li><p>k-v为了方便程序员遍历，还会创建EntrySet集合，该集合存放的元素的类型Entry，而一个Entry对象就有k,v</p>
-<p>EntrySet&lt;Entry&lt;k,v&gt;&gt; 即：transient Set&lt;Map.Entry&lt;k,v&gt;&gt; entrySet;</p>
-<p>EntrySet中，定义的类型是Map.Entry，实际存放HashMap$Node</p>
-<p>因为HashMap$Node实现了Map.entry</p>
-</li>
-</ul>
-</li>
-<li><p>Map接口常用方法</p>
-<ul>
-<li>put：添加</li>
-<li>remove：根据键删除映射关系</li>
-<li>get：根据键获取值</li>
-<li>size：获取元素个数</li>
-<li>isEmpty：判断个数是否为0</li>
-<li>clear：清除</li>
-<li>containsKey：查找键是否存在</li>
-</ul>
-</li>
-<li><p>Map的遍历方式，</p>
-<p>​    总结：获取keySet()，获取values()，获取entrySet()然后遍历</p>
-<ul>
-<li><p>遍历keySet</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Set keySet = map.keySet();</span><br><span class="line"><span class="keyword">for</span>(Object key:keySet)&#123;</span><br><span class="line">     System.out.println(key+<span class="string">&quot;-&quot;</span>+map.get(key));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>对keySet使用迭代器</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Set keySet = map.keySet();</span><br><span class="line"></span><br><span class="line">Iterator iterator = keySet.iterator();</span><br><span class="line"><span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">    Object key = iterator.next();</span><br><span class="line">    System.out.println(key+<span class="string">&quot;-&quot;</span>+map.get(key));</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>使用values()方法获取所有值，然后增强for输出</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Collection values = map.values();</span><br><span class="line"><span class="keyword">for</span>(Object value:values)&#123;</span><br><span class="line">     System.out.println(value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>使用values方法获取所有值，然后迭代器输出</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Collection values = map.values();</span><br><span class="line"></span><br><span class="line">Iterator iterator = values.iterator();</span><br><span class="line"><span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">    Object value = iterator.next();</span><br><span class="line">    System.out.println(value);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>使用entrySet，然后增强for循环</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Set entrySet = map.entrySet();</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(Object entry: entrySet)&#123;</span><br><span class="line">	Map.Entry m = (Map.Entry) entry;</span><br><span class="line">    System.out.println(m.getKey()+<span class="string">&quot;- &quot;</span>+m.getValue());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>使用entrySet，然后迭代器</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Set entrySet = map.entrySet();</span><br><span class="line"></span><br><span class="line">Iterator iterator = entrySet.iterator();</span><br><span class="line"><span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">    Map.Entry m = iterator.next;</span><br><span class="line">    System.out.println(m.getKey()+<span class="string">&quot;- &quot;</span>+m.getValue());</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>Map接口的常用实现类</p>
-<ul>
-<li><p>HashMap</p>
-</li>
-<li><p>HashTable</p>
-</li>
-<li><p>Properties</p>
-<p>如果添加相同的key，会覆盖原来对于的value值</p>
-<p>不保证映射的顺序</p>
-<p>没有实现同步，因此线程不安全</p>
-</li>
-</ul>
-</li>
-<li><p>HashMap底层机制</p>
-<ul>
-<li><p>特性：</p>
-<ul>
-<li>(k,v)是一个Node实现了Map.Entry&lt;K,V&gt;</li>
-<li>7：数组+链表；8：数组+链表+红黑树</li>
-</ul>
-</li>
-<li><p>底层：</p>
-<ul>
-<li>维护Node类型的数组table，默认为null</li>
-<li>创建对象时，默认加载因子初始化为0.75</li>
-<li>添加key-value时根据key的哈希值得到在table的索引，然后判断该索引处是否有元素，没有的话直接添加，有的话；判断当前key和该索引的key是否一样，如果一样，替换value值；不一样的话，判断当前时链表结构还是树结构，做出相应处理，如果添加时发现容量不够，会先扩容。</li>
-<li>第一次添加，table容量扩为16，临界值12</li>
-<li>以后每次扩容，容量为当前的2倍，临界值也为原来的二倍</li>
-<li>在java8，链表元素超过8，且table容量大于等于64，就会进行树化</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>HashMap的put</p>
-<ul>
-<li><p>put()方法，计算hash值，然后</p>
-</li>
-<li><p>进入putVal方法</p>
-<ul>
-<li><p>判断大小，不够扩容</p>
-</li>
-<li><p>判断索引下是否为空？是的话添加newNode</p>
-</li>
-<li><p>否则，该索引下不为空，判断要加入的键值对与存在的key的hash值一样或者他们equals为真，替换value值</p>
-</li>
-<li><p>判断如果当前的table中已存在的Node是红黑树，那么使用红黑树的方法去put</p>
-</li>
-<li><p>判断，如果当前找到的节点是链表，那么通过循环判断有没有和要插入的相同</p>
-<ul>
-<li><p>没有的话加入到链表末尾</p>
-<p>加入后，判断当前链表的个数是否达到8个，是的话就调用treeifyBin进行树化</p>
-</li>
-<li><p>有的话，不添加，而是替换value值</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<h2 id="关于开发中集合类的选择？及对工具类的介绍"><a href="#关于开发中集合类的选择？及对工具类的介绍" class="headerlink" title="关于开发中集合类的选择？及对工具类的介绍"></a>关于开发中集合类的选择？及对工具类的介绍</h2><ol>
-<li><p>开发中如何选择集合实现类？</p>
-<p>(1). 判断存储类型是一组对象或者一组键值对</p>
-<p>(2). 是一组对象：</p>
-<ul>
-<li>Collection接口：<ul>
-<li>允许重复：List<ul>
-<li>增删多：LinkedList</li>
-<li>改查多：ArrayList</li>
-</ul>
-</li>
-<li>不允许重复：Set<ul>
-<li>无序：HashSet</li>
-<li>有序TreeSet</li>
-<li>插入和取出顺序一致：LinkedHashSet</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>(3). 是一组键值对</p>
-<ul>
-<li>键无序：HashMap</li>
-<li>键排序：TreeMap</li>
-<li>键插入和取出顺序一致：LinkedHashMap</li>
-<li>读取文件：Properties</li>
-</ul>
-</li>
-<li><p>HashTable简介：1.0版本出生 (比HashMap(1.2版本)早)</p>
-<ul>
-<li>存放的元素是键值对K-V</li>
-<li>键和值都不能为null，否则会抛出NullPointerException</li>
-<li>使用方法基本和HashMa一样</li>
-<li>是线程安全的</li>
-<li>底层：<ul>
-<li> 有数组Hashtable$Entry[]    初始化大小为11</li>
-<li>临界值 threshold= 11*0.75</li>
-<li>扩容：自带的扩容机制</li>
-<li>执行方法 addEntry(hash,key,value,index) 来添加</li>
-<li>当 if(count &gt;= threshold) 满足时扩容</li>
-<li>按照 int newCapacity = (oldCapacity &gt;&gt; 1) + 1;  来扩容</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Properties：也是Map接口实现类，继承自HashTable</p>
-<ul>
-<li>添加元素：put()方法</li>
-<li>删除元素：remove()方法</li>
-<li>修改元素：通过put()方法覆盖原来的value</li>
-<li>查找元素：get()方法和getPropety()方法</li>
-</ul>
-</li>
-<li><p>TreeSet: 底层是TreeMap</p>
-<p>(1)使用无参构造器创建时，仍然是无序的</p>
-<p>(2)使用TreeSet提供的一个构造器，可以传入比较器(匿名内部类)</p>
-<p>​    并在其中指定排序规则    </p>
-<ul>
-<li><p>构造器把传入的比较器对象，赋给了TreeSet底层中TreeMap的属性this.comparator。    </p>
-</li>
-<li><p>使用add()方法添加内容，在底层会执行到TreeMap中的put方法，此时我们可以发现里边有使用了comparator</p>
-<p>如果比较时发现重复key，选择不加入</p>
-<p>是否重复取决于比较器的设定！！！！</p>
-</li>
-</ul>
-</li>
-<li><p>TreeMap</p>
-<p>(1)put()方法执行逻辑</p>
-<ul>
-<li>第一次添加，先判断是否为空，是的话进行初始化，同时调用一次compare方法(避免null)，创建底层为Entry(而不是Node)，并交给root。</li>
-<li>如果不为空，使用比较器，动态绑定到我们的匿名内部类的compare，遍历所有的key，给当前key找到适当位置</li>
-<li>如果遍历过程中发现准备添加的key和当前存在的key相等，就不添加了。</li>
-</ul>
-</li>
-<li><p>Collections工具类：</p>
-<ul>
-<li>是一个操作List、Set、Map的工具类</li>
-<li>提供了一系列静态的方法对集合进行排序、查询和修改等操作</li>
-</ul>
-<p>(1)排序操作：(均为static)</p>
-<ul>
-<li>reverse(List)：反转List中元素的顺序</li>
-<li>shuffle(List)：对List集合元素进行随机排序(随机打乱顺序)</li>
-<li>sort(List)：根据元素的自然顺序对指定的List集合元素按升序排列</li>
-<li>sort(List，Comparator)：根据指定的Comparator对指定的List集合元素进行排序</li>
-<li>swap(List, int, int)：将指定list集合中的i处元素和j处元素进行交换</li>
-</ul>
-<p>(2)查找、替换：</p>
-<ul>
-<li>Object max(Collection)：根据元素的自然排序，返回给定集合中的最大元素</li>
-<li>Object max(Collection, Comparator)：根据指定的Comparator排序，返回给定集合中的最大元素</li>
-<li>Object min(Collection)</li>
-<li>Object min(Collection, Comparator) 找最小</li>
-<li>int frequency(Collection, Object)：返回指定集合中指定元素的出现次数</li>
-<li>void copy(List dest,List src)：将src中的内容复制到dest中</li>
-<li>boolean replaceAll(List list, Object oldVal, Object newVal)：使用新值替换List中所有旧值</li>
-</ul>
-</li>
-</ol>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/27/%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
